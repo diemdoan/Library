@@ -32,7 +32,7 @@ public class LoginWindow {
 		backgroundLabel.setBounds(0, 0, logFrame.getWidth(), logFrame.getHeight());
 		logFrame.setContentPane(backgroundLabel);
 
-		JLabel lblNewLabel_1 = new JLabel(" THƯ VIỆN DIEM NAm ");
+		JLabel lblNewLabel_1 = new JLabel(" THƯ VIỆN DIEM ");
 		lblNewLabel_1.setBounds(147, 21, 163, 23);
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblNewLabel_1.setBackground(Color.WHITE);
