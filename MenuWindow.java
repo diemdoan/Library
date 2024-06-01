@@ -1,15 +1,30 @@
 package LibraryManagement;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.sql.*;
 
 public class MenuWindow {
 
 	public JFrame frame;
 	private int id;
+
+	private String host = "localhost";
+	private int port = 9999;
+	private Socket socket;
+
+	private DataInputStream dis;
+	private DataOutputStream dos;
+	private String username;
+
+	Thread receiver;
 
 	public static void main(String[] args) {
 		MenuWindow menuWindow = new MenuWindow(0);
@@ -61,7 +76,9 @@ public class MenuWindow {
 				roleTextField.setText(role);
 				String idstr = resultSet.getString("id");
 				idTextField.setText(idstr);
+
 				id = resultSet.getInt("id");
+				username = resultSet.getString("AccName");
 			}
 			resultSet.close();
 			statement.close();
@@ -129,6 +146,7 @@ public class MenuWindow {
 			public void actionPerformed(ActionEvent e) {
 				showLogin();
 				frame.dispose();
+
 			}
 		});
 
@@ -138,8 +156,35 @@ public class MenuWindow {
 		frame.getContentPane().add(btnNewButton_1);
 
 		btnNewButton_1.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
+			}
+		});
+
+		JButton mess = new JButton("Nhắn tin");
+		mess.setFont(new Font("Tahoma", Font.BOLD, 14));
+		mess.setBounds(439, 10, 98, 30);
+		frame.getContentPane().add(mess);
+
+		mess.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				String response = Login(username);
+
+				if (response.equals("Log in successful")) {
+					EventQueue.invokeLater(new Runnable() {
+						public void run() {
+							try {
+								Chat frame = new Chat(username, dis, dos, id);
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					});
+					frame.dispose();
+				}
 			}
 		});
 
@@ -168,6 +213,40 @@ public class MenuWindow {
 	private void showLogin() {
 		LoginWindow loginWindow = new LoginWindow();
 		loginWindow.logFrame.setVisible(true);
+	}
+
+	public String Login(String username) {
+		try {
+			Connect();
+
+			dos.writeUTF("Log in");
+			dos.writeUTF(username);
+			dos.flush();
+
+			String response = dis.readUTF();
+			return response;
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Network error: Log in fail";
+		}
+	}
+
+	public void Connect() {
+		try {
+			if (socket != null) {
+				socket.close();
+			}
+			socket = new Socket(host, port);
+			this.dis = new DataInputStream(socket.getInputStream());
+			this.dos = new DataOutputStream(socket.getOutputStream());
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public String getUsername() {
+		return this.username;
 	}
 
 }
