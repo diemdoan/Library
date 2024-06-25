@@ -12,8 +12,6 @@ public class ChatServer {
 	private Socket socket;
 	static ArrayList<Handler> clients = new ArrayList<Handler>();
 
-	
-
 	public ChatServer() throws IOException {
 		try {
 			lock = new Object();
@@ -125,8 +123,7 @@ class Handler implements Runnable {
 	private String password;
 	private boolean isLoggedIn;
 
-	public Handler(Socket socket, String username, boolean isLoggedIn, Object lock)
-			throws IOException {
+	public Handler(Socket socket, String username, boolean isLoggedIn, Object lock) throws IOException {
 		this.socket = socket;
 		this.username = username;
 		this.dis = new DataInputStream(socket.getInputStream());

@@ -12,11 +12,11 @@ import java.net.Socket;
 import java.sql.*;
 
 public class MenuWindow {
-
+	
 	public JFrame frame;
 	private int id;
 
-	private String host = "localhost";
+	private String host = "192.168.1.115";
 	private int port = 9999;
 	private Socket socket;
 
